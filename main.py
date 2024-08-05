@@ -1,14 +1,11 @@
-from PIL import Image
-import pytesseract
+import PyPDF2
 
-# Path to your image file
-image_path = '/Users/shanaisyuen/Downloads/payslip_jun23.png'
+# Open the PDF file
+import pdfplumber
 
-# Open image
-img = Image.open(image_path)
+with pdfplumber.open('<enter pdf path>.pdf') as pdf:
+    text = ""
+    for page in pdf.pages:
+        text += page.extract_text()
 
-# Perform OCR
-text = pytesseract.image_to_string(img)
-
-print("Extracted Text:")
 print(text)
