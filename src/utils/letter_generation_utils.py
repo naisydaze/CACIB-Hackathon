@@ -1,14 +1,9 @@
 from openpyxl import load_workbook
 from filelock import FileLock
 
-def find_next_item(workbook_path, values):
+def find_next_item(workbook_path):
 
-    # lock_path = workbook_path + '.lock'
-    # lock = FileLock(lock_path)
-
-    # # Acquire the file lock
-    # with lock:
-    #     print(f"Lock acquired for retrieving latest item no.")
+    print(f"Lock acquired for retrieving latest item no.")
 
 
     letter_ref = load_workbook(workbook_path)
@@ -35,27 +30,22 @@ def find_next_item(workbook_path, values):
         #     row[idx + 1].value = value
 
     print("No empty row found.")
-    return None, None  # If no empty row was found
+    return None, None  # If no empty row was found 
 
 
 def fill_next_item(workbook_path, row_number, next_item_no,  values):
 
-    lock_path = workbook_path + '.lock'
-    lock = FileLock(lock_path)
+    print(f"Lock acquired for filling row {row_number}.")
+    # Load the workbook and select the active worksheet
+    workbook = load_workbook(workbook_path)
+    sheet = workbook.active
 
-    # Acquire the file lock
-    with lock:
-        print(f"Lock acquired for filling row {row_number}.")
-        # Load the workbook and select the active worksheet
-        workbook = load_workbook(workbook_path)
-        sheet = workbook.active
+    # Insert values into columns B to F of the specified row
+    for idx, value in enumerate(values):
+        sheet.cell(row=row_number, column=1).value = next_item_no  # A iscolumn 1, for item no.
+        print(next_item_no)
+        sheet.cell(row=row_number, column=idx + 2).value = value  # B is column 2
 
-        # Insert values into columns B to F of the specified row
-        for idx, value in enumerate(values):
-            sheet.cell(row=row_number, column=1).value = next_item_no  # A iscolumn 1, for item no.
-            print(next_item_no)
-            sheet.cell(row=row_number, column=idx + 2).value = value  # B is column 2
-
-        # Save the workbook with the updated values
     workbook.save(workbook_path)
-    print(f"Row {row_number} filled and lock released.")    
+    print(f"Row {row_number} filled and lock released.") 
+ 
